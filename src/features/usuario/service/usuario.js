@@ -8,6 +8,11 @@ const usuarioService = {
     async criar(data) {
         const response = await api.post('/rbac/usuario', data)
         return response.data    
+    },
+
+    async getAll() {
+        const response = await api.get('/rbac/usuario')
+        return response.data.data
     }
 }
 

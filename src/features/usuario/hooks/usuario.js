@@ -16,8 +16,9 @@ export function useUsuario() {
             setError(null);
 
             const response = await usuarioService.login({ email, senha });
-            setUsuario(response.data);
-            setAuthUser(response.data.data, response.data);
+            const token = (response.data)
+            setUsuario(response);
+            setAuthUser(token);
 
             navigate("/");
 
