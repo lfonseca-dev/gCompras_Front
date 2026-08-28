@@ -1,21 +1,25 @@
 import { useState, useEffect } from "react";
 
+import { useAuth } from "../../../context/AuthContext.jsx";
+
 import compraService from "../service/service.js";
 
-import empresaService from "../../empresa/service/service.js";
 import fornecedorService from "../../fornecedor/service/service.js";
-import usuarioService from "../../usuario/service/usuario.js";
 import statusCompraService from "../../status/service/service.js";
 
 export function useCompra() {
+    const { user } = useAuth();
+
     const [compras, setCompras] = useState([]);
 
-    const [empresas, setEmpresas] = useState([]);
     const [fornecedores, setFornecedores] = useState([]);
-    const [usuarios, setUsuarios] = useState([]);
     const [statusCompras, setStatusCompras] = useState([]);
 
     const [loading, setLoading] = useState(true);
+
+    // =========================
+    // BUSCAR COMPRAS
+    // =========================
 
     const fetchCompras = async () => {
         try {
@@ -31,29 +35,47 @@ export function useCompra() {
         }
     };
 
-    const fetchDadosSelects = async () => {
-    try {
-        const fornecedoresData = await fornecedorService.getAll();
-        console.log("FORNECEDORES:", fornecedoresData);
-        setFornecedores(fornecedoresData);
-    } catch (error) {
-        console.error("ERRO FORNECEDOR:", error);
-    }
+    // =========================
+    // BUSCAR DADOS DOS SELECTS
+    // =========================
 
-    try {
-        const statusData = await statusCompraService.getAll();
-        console.log("STATUS:", statusData);
-        setStatusCompras(statusData);
-    } catch (error) {
-        console.error("ERRO STATUS:", error);
-    }
-};
+    const fetchDadosSelects = async () => {
+        try {
+            const fornecedoresData = await fornecedorService.getAll();
+
+            setFornecedores(fornecedoresData);
+        } catch (error) {
+            console.error("Erro ao buscar fornecedores:", error);
+        }
+
+        try {
+            const statusData = await statusCompraService.getAll();
+
+            setStatusCompras(statusData);
+        } catch (error) {
+            console.error("Erro ao buscar status das compras:", error);
+        }
+    };
+
+    // =========================
+    // CRIAR COMPRA
+    // =========================
 
     const createCompra = async (dados) => {
         try {
             setLoading(true);
 
-            const data = await compraService.post(dados);
+            const dadosCompra = {
+                ...dados,
+
+                // Usuário logado
+                usuario_id: Number(user.id),
+
+                // Empresa do usuário logado
+                empresa_id: Number(user.empresa.id),
+            };
+
+            const data = await compraService.post(dadosCompra);
 
             await fetchCompras();
 
@@ -66,11 +88,22 @@ export function useCompra() {
         }
     };
 
+    // =========================
+    // ATUALIZAR COMPRA
+    // =========================
+
     const updateCompra = async (id, dados) => {
         try {
             setLoading(true);
 
-            const data = await compraService.put(id, dados);
+            const dadosCompra = {
+                ...dados,
+
+                usuario_id: Number(user.id),
+                empresa_id: Number(user.empresa.id),
+            };
+
+            const data = await compraService.put(id, dadosCompra);
 
             await fetchCompras();
 
@@ -82,6 +115,10 @@ export function useCompra() {
             setLoading(false);
         }
     };
+
+    // =========================
+    // EXCLUIR COMPRA
+    // =========================
 
     const deleteCompra = async (id) => {
         try {
@@ -100,16 +137,21 @@ export function useCompra() {
         }
     };
 
+    // =========================
+    // EFFECT
+    // =========================
+
     useEffect(() => {
+        if (!user) return;
+
         fetchCompras();
         fetchDadosSelects();
-    }, []);
+    }, [user]);
 
     return {
         compras,
-        empresas,
+
         fornecedores,
-        usuarios,
         statusCompras,
 
         loading,

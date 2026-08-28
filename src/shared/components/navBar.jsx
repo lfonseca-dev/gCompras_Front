@@ -1,16 +1,18 @@
-import { FaHome, FaUser, FaShoppingCart, FaUserTie } from "react-icons/fa";
+import { FaHome, FaUser, FaShoppingCart, FaUserTie, FaSignOutAlt } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const links = {
     admin: [
-        { href: "/dashboard", label: "Dashboard", icon: FaHome },
+        { href: "/", label: "Home", icon: FaHome },
         { href: "/usuarios", label: "Usuários", icon: FaUser },
-        { href: "/compras", label: "Compras", icon: FaShoppingCart },
+        { href: "/compra", label: "Compras", icon: FaShoppingCart },
         { href: "/fornecedores", label: "Fornecedores", icon: FaUserTie },
+        { href: "/cadastro", label: "Cadastros", icon: FaUser },
     ],
     gestor: [
-        { href: "/dashboard", label: "Dashboard", icon: FaHome },
-        { href: "/compras", label: "Compras", icon: FaShoppingCart },
+        { href: "/", label: "Home", icon: FaHome },
+        { href: "/compra", label: "Compras", icon: FaShoppingCart },
         { href: "/fornecedores", label: "Fornecedores", icon: FaUserTie },
     ],
 };
@@ -18,6 +20,8 @@ const links = {
 export default function NavBar({ admin }) {
     const { pathname } = useLocation();
     const items = admin ? links.admin : links.gestor;
+
+    const { logout } = useAuth();
 
     return (
         <nav className="fixed left-0 top-0 h-screen w-60 flex flex-col
@@ -52,6 +56,18 @@ export default function NavBar({ admin }) {
                         </a>
                     );
                 })}
+
+                <button type="button" onClick={logout}
+                    className="group flex w-full items-center gap-3 rounded-lg border border-transparent px-4 py-3 text-sm font-medium text-slate-400 transition-all duration-200 hover:border-red-500/20 hover:bg-red-500/10 hover:text-red-400 focus:outline-none focus:ring-2 focus:ring-red-500/30" >
+
+                    <span className="text-[15px]" >
+                        Sair
+                    </span>
+                    <FaSignOutAlt
+                        className="text-[15px]"
+                    />
+                </button>
+
             </div>
         </nav>
     );

@@ -7,7 +7,7 @@ export default function Layout() {
 
     return (
         <div className="flex">
-            <NavBar admin={user?.role === "admin"} />
+            <NavBar admin={user?.nivel_acesso === 1} />
             <main className="flex-1 ml-60 min-h-screen bg-slate-950">
                 <Outlet />
             </main>

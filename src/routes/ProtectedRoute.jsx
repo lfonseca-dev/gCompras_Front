@@ -13,7 +13,7 @@ export default function ProtectedRoute({ allowedRoles }) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
-    if (allowedRoles && !allowedRoles.includes(user.role)) {
+    if (allowedRoles && !allowedRoles.includes(user.nivel_acesso)) {
         return <Navigate to="/nao-autorizado" replace />;
     }
 

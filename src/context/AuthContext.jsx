@@ -8,7 +8,7 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const Navigate = useNavigate();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -16,6 +16,14 @@ export function AuthProvider({ children }) {
         if (token) {
             try {
                 const decoded = jwtDecode(token);
+
+                // Verifica se o token está expirado
+                if (decoded.exp && decoded.exp * 1000 < Date.now()) {
+                    localStorage.removeItem("token");
+                    setUser(null);
+                    setLoading(false);
+                    return;
+                }
 
                 setUser({
                     token,
@@ -37,24 +45,33 @@ export function AuthProvider({ children }) {
     }, []);
 
     const login = (token) => {
-        const decoded = jwtDecode(token);
+        try {
+            const decoded = jwtDecode(token);
 
-        localStorage.setItem("token", token);
+            localStorage.setItem("token", token);
 
-        setUser({
-            token,
-            id: decoded.sub,
-            email: decoded.email,
-            nome: decoded.nome,
-            empresa: decoded.empresa,
-            nivel_acesso: decoded.nivel_acesso,
-        });
+            setUser({
+                token,
+                id: decoded.sub,
+                email: decoded.email,
+                nome: decoded.nome,
+                empresa: decoded.empresa,
+                nivel_acesso: decoded.nivel_acesso,
+            });
+        } catch (error) {
+            console.error("Erro ao fazer login:", error);
+            localStorage.removeItem("token");
+            setUser(null);
+        }
     };
 
     const logout = () => {
+        console.log("Executando logout...");
+
         localStorage.removeItem("token");
         setUser(null);
-        Navigate("/login");
+
+        navigate("/login", { replace: true });
     };
 
     return (

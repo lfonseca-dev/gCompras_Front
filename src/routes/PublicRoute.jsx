@@ -10,7 +10,7 @@ export default function PublicRoute() {
     }
 
     if (user) {
-        const redirectTo = location.state?.from?.pathname;
+        const redirectTo = location.state?.from?.pathname || "/";
         return <Navigate to={redirectTo} replace />;
     }
 

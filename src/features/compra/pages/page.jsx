@@ -1,15 +1,13 @@
 import { useState } from "react";
+
 import { useCompra } from "../hooks/hook.js";
 
 export default function Compra() {
     const {
         compras,
-        empresas,
         fornecedores,
-        usuarios,
         statusCompras,
         loading,
-        fetchCompras,
         createCompra,
         updateCompra,
         deleteCompra,
@@ -25,8 +23,6 @@ export default function Compra() {
         valor: "",
         observacao: "",
         fornecedor_id: "",
-        usuario_id: "",
-        empresa_id: "",
         status_compra_id: "",
     });
 
@@ -45,8 +41,6 @@ export default function Compra() {
             valor: "",
             observacao: "",
             fornecedor_id: "",
-            usuario_id: "",
-            empresa_id: "",
             status_compra_id: "",
         });
 
@@ -59,26 +53,33 @@ export default function Compra() {
     // =========================
 
     const abrirModalEditar = (compra) => {
-    setCompraSelecionada(compra);
+        setCompraSelecionada(compra);
 
-    setForm({
-        numero: compra.numero ?? "",
-        descricao: compra.descricao ?? "",
-        data: compra.data
-            ? compra.data.substring(0, 10)
-            : "",
-        valor: compra.valor !== null && compra.valor !== undefined
-            ? Number(compra.valor)
-            : "",
-        observacao: compra.observacao ?? "",
-        fornecedor_id: compra.fornecedor_id ?? "",
-        usuario_id: compra.usuario_id ?? "",
-        empresa_id: compra.empresa_id ?? "",
-        status_compra_id: compra.status_compra_id ?? "",
-    });
+        setForm({
+            numero: compra.numero ?? "",
+            descricao: compra.descricao ?? "",
 
-    setErroForm("");
-    setModal("editar");
+            data: compra.data
+                ? compra.data.substring(0, 10)
+                : "",
+
+            valor:
+                compra.valor !== null &&
+                compra.valor !== undefined
+                    ? Number(compra.valor)
+                    : "",
+
+            observacao: compra.observacao ?? "",
+
+            fornecedor_id:
+                compra.fornecedor_id ?? "",
+
+            status_compra_id:
+                compra.status_compra_id ?? "",
+        });
+
+        setErroForm("");
+        setModal("editar");
     };
 
     // =========================
@@ -92,7 +93,7 @@ export default function Compra() {
     };
 
     // =========================
-    // FECHAR
+    // FECHAR MODAL
     // =========================
 
     const fecharModal = () => {
@@ -124,42 +125,44 @@ export default function Compra() {
         event.preventDefault();
 
         if (!form.numero.trim()) {
-            setErroForm("O número da compra é obrigatório.");
+            setErroForm(
+                "O número da compra é obrigatório."
+            );
             return;
         }
 
         if (!form.descricao.trim()) {
-            setErroForm("A descrição é obrigatória.");
+            setErroForm(
+                "A descrição é obrigatória."
+            );
             return;
         }
 
         if (!form.data) {
-            setErroForm("A data da compra é obrigatória.");
+            setErroForm(
+                "A data da compra é obrigatória."
+            );
             return;
         }
 
         if (!form.valor) {
-            setErroForm("O valor da compra é obrigatório.");
+            setErroForm(
+                "O valor da compra é obrigatório."
+            );
             return;
         }
 
         if (!form.fornecedor_id) {
-            setErroForm("Selecione um fornecedor.");
-            return;
-        }
-
-        if (!form.usuario_id) {
-            setErroForm("Selecione um usuário.");
-            return;
-        }
-
-        if (!form.empresa_id) {
-            setErroForm("Selecione uma empresa.");
+            setErroForm(
+                "Selecione um fornecedor."
+            );
             return;
         }
 
         if (!form.status_compra_id) {
-            setErroForm("Selecione o status da compra.");
+            setErroForm(
+                "Selecione o status da compra."
+            );
             return;
         }
 
@@ -167,18 +170,34 @@ export default function Compra() {
             setSalvando(true);
             setErroForm("");
 
+            // ==========================================
+            // ATENÇÃO:
+            // usuario_id e empresa_id NÃO SÃO ENVIADOS.
+            // O BACKEND PEGA OS DOIS DO TOKEN.
+            // ==========================================
+
             const dados = {
                 numero: form.numero.trim(),
+
                 descricao: form.descricao.trim(),
+
                 data: form.data,
+
                 valor: Number(form.valor),
+
                 observacao: form.observacao.trim(),
 
-                fornecedor_id: Number(form.fornecedor_id),
-                usuario_id: Number(form.usuario_id),
-                empresa_id: Number(form.empresa_id),
-                status_compra_id: Number(form.status_compra_id),
+                fornecedor_id:
+                    Number(form.fornecedor_id),
+
+                status_compra_id:
+                    Number(form.status_compra_id),
             };
+
+            console.log(
+                "PAYLOAD ENVIADO:",
+                dados
+            );
 
             if (modal === "adicionar") {
                 await createCompra(dados);
@@ -214,7 +233,9 @@ export default function Compra() {
             setSalvando(true);
             setErroForm("");
 
-            await deleteCompra(compraSelecionada.id);
+            await deleteCompra(
+                compraSelecionada.id
+            );
 
             fecharModal();
 
@@ -231,11 +252,13 @@ export default function Compra() {
     };
 
     // =========================
-    // FORMATADORES
+    // FORMATAR VALOR
     // =========================
 
     const formatarValor = (valor) => {
-        return Number(valor || 0).toLocaleString(
+        return Number(
+            valor || 0
+        ).toLocaleString(
             "pt-BR",
             {
                 style: "currency",
@@ -244,59 +267,71 @@ export default function Compra() {
         );
     };
 
+    // =========================
+    // FORMATAR DATA
+    // =========================
+
     const formatarData = (data) => {
         if (!data) return "-";
 
-        const dataSemHora = data.split("T")[0];
+        const dataSemHora =
+            data.split("T")[0];
 
-        const [ano, mes, dia] = dataSemHora.split("-");
+        const [
+            ano,
+            mes,
+            dia
+        ] = dataSemHora.split("-");
 
         return `${dia}/${mes}/${ano}`;
     };
 
     // =========================
-    // BUSCAR NOMES
+    // BUSCAR FORNECEDOR
     // =========================
 
     const getFornecedor = (id) => {
-        const fornecedor = fornecedores.find(
-            (item) => item.id === Number(id)
-        );
+        const fornecedor =
+            fornecedores.find(
+                (item) =>
+                    item.id === Number(id)
+            );
 
-        return fornecedor?.razao_social || `Fornecedor #${id}`;
+        return (
+            fornecedor?.razao_social ||
+            `Fornecedor #${id}`
+        );
     };
 
-    const getUsuario = (id) => {
-        const usuario = usuarios.find(
-            (item) => item.id === Number(id)
-        );
-
-        return usuario?.nome || `Usuário #${id}`;
-    };
-
-    const getEmpresa = (id) => {
-        const empresa = empresas.find(
-            (item) => item.id === Number(id)
-        );
-
-        return empresa?.razao_social || `Empresa #${id}`;
-    };
+    // =========================
+    // BUSCAR STATUS
+    // =========================
 
     const getStatus = (id) => {
-        const status = statusCompras.find(
-            (item) => Number(item.id) === Number(id)
-        );
+        const status =
+            statusCompras.find(
+                (item) =>
+                    Number(item.id) ===
+                    Number(id)
+            );
 
-        return status?.descricao || `Status #${id}`;
+        return (
+            status?.descricao ||
+            `Status #${id}`
+        );
     };
 
     return (
         <div className="min-h-screen bg-gray-50 p-6">
+
             <div className="mx-auto max-w-7xl">
 
-                {/* CABEÇALHO */}
+                {/* =========================
+                    CABEÇALHO
+                ========================== */}
 
                 <div className="mb-6 flex items-center justify-between">
+
                     <div>
                         <h1 className="text-2xl font-bold text-gray-900">
                             Compras
@@ -309,18 +344,24 @@ export default function Compra() {
 
                     <button
                         type="button"
-                        onClick={abrirModalAdicionar}
+                        onClick={
+                            abrirModalAdicionar
+                        }
                         className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700"
                     >
                         + Nova compra
                     </button>
+
                 </div>
 
-                {/* TABELA */}
+                {/* =========================
+                    TABELA
+                ========================== */}
 
                 <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
 
                     {loading ? (
+
                         <div className="flex flex-col items-center justify-center px-6 py-16">
 
                             <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
@@ -328,6 +369,7 @@ export default function Compra() {
                             <p className="mt-4 text-sm text-gray-500">
                                 Carregando compras...
                             </p>
+
                         </div>
 
                     ) : compras.length === 0 ? (
@@ -344,11 +386,14 @@ export default function Compra() {
 
                             <button
                                 type="button"
-                                onClick={abrirModalAdicionar}
+                                onClick={
+                                    abrirModalAdicionar
+                                }
                                 className="mt-5 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
                             >
                                 + Nova compra
                             </button>
+
                         </div>
 
                     ) : (
@@ -360,6 +405,7 @@ export default function Compra() {
                                 <thead className="border-b border-gray-200 bg-gray-50">
 
                                     <tr>
+
                                         <th className="px-6 py-4 font-semibold text-gray-600">
                                             Número
                                         </th>
@@ -387,104 +433,123 @@ export default function Compra() {
                                         <th className="px-6 py-4 text-right font-semibold text-gray-600">
                                             Ações
                                         </th>
+
                                     </tr>
 
                                 </thead>
 
                                 <tbody className="divide-y divide-gray-100">
 
-                                    {compras.map((compra) => (
+                                    {compras.map(
+                                        (compra) => (
 
-                                        <tr
-                                            key={compra.id}
-                                            className="transition hover:bg-gray-50"
-                                        >
+                                            <tr
+                                                key={
+                                                    compra.id
+                                                }
+                                                className="transition hover:bg-gray-50"
+                                            >
 
-                                            <td className="px-6 py-4 font-medium text-gray-900">
-                                                {compra.numero}
-                                            </td>
+                                                <td className="px-6 py-4 font-medium text-gray-900">
+                                                    {
+                                                        compra.numero
+                                                    }
+                                                </td>
 
-                                            <td className="px-6 py-4 text-gray-700">
-                                                {compra.descricao}
-                                            </td>
+                                                <td className="px-6 py-4 text-gray-700">
+                                                    {
+                                                        compra.descricao
+                                                    }
+                                                </td>
 
-                                            <td className="px-6 py-4 text-gray-700">
-                                                {getFornecedor(
-                                                    compra.fornecedor_id
-                                                )}
-                                            </td>
-
-                                            <td className="px-6 py-4 text-gray-600">
-                                                {formatarData(compra.data)}
-                                            </td>
-
-                                            <td className="px-6 py-4 font-medium text-gray-900">
-                                                {formatarValor(compra.valor)}
-                                            </td>
-
-                                            <td className="px-6 py-4">
-
-                                                <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
-                                                    {getStatus(
-                                                        compra.status_compra_id
+                                                <td className="px-6 py-4 text-gray-700">
+                                                    {getFornecedor(
+                                                        compra.fornecedor_id
                                                     )}
-                                                </span>
+                                                </td>
 
-                                            </td>
+                                                <td className="px-6 py-4 text-gray-600">
+                                                    {formatarData(
+                                                        compra.data
+                                                    )}
+                                                </td>
 
-                                            <td className="px-6 py-4">
+                                                <td className="px-6 py-4 font-medium text-gray-900">
+                                                    {formatarValor(
+                                                        compra.valor
+                                                    )}
+                                                </td>
 
-                                                <div className="flex justify-end gap-2">
+                                                <td className="px-6 py-4">
 
-                                                    <button
-                                                        type="button"
-                                                        onClick={() =>
-                                                            abrirModalEditar(
-                                                                compra
-                                                            )
-                                                        }
-                                                        className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-100"
-                                                    >
-                                                        Editar
-                                                    </button>
+                                                    <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
+                                                        {getStatus(
+                                                            compra.status_compra_id
+                                                        )}
+                                                    </span>
 
-                                                    <button
-                                                        type="button"
-                                                        onClick={() =>
-                                                            abrirModalExcluir(
-                                                                compra
-                                                            )
-                                                        }
-                                                        className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
-                                                    >
-                                                        Excluir
-                                                    </button>
+                                                </td>
 
-                                                </div>
+                                                <td className="px-6 py-4">
 
-                                            </td>
+                                                    <div className="flex justify-end gap-2">
 
-                                        </tr>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                abrirModalEditar(
+                                                                    compra
+                                                                )
+                                                            }
+                                                            className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-100"
+                                                        >
+                                                            Editar
+                                                        </button>
 
-                                    ))}
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                abrirModalExcluir(
+                                                                    compra
+                                                                )
+                                                            }
+                                                            className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                                                        >
+                                                            Excluir
+                                                        </button>
+
+                                                    </div>
+
+                                                </td>
+
+                                            </tr>
+
+                                        )
+                                    )}
 
                                 </tbody>
 
                             </table>
 
                         </div>
+
                     )}
 
                 </div>
 
-                {!loading && compras.length > 0 && (
-                    <p className="mt-3 text-sm text-gray-500">
-                        {compras.length}{" "}
-                        {compras.length === 1
-                            ? "compra cadastrada"
-                            : "compras cadastradas"}
-                    </p>
-                )}
+                {!loading &&
+                    compras.length > 0 && (
+
+                        <p className="mt-3 text-sm text-gray-500">
+
+                            {compras.length}{" "}
+
+                            {compras.length === 1
+                                ? "compra cadastrada"
+                                : "compras cadastradas"}
+
+                        </p>
+                    )}
 
             </div>
 
@@ -492,14 +557,20 @@ export default function Compra() {
                 MODAL ADICIONAR / EDITAR
             ====================================================== */}
 
-            {(modal === "adicionar" || modal === "editar") && (
+            {(modal === "adicionar" ||
+                modal === "editar") && (
 
                 <div
                     className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
                     onMouseDown={(e) => {
-                        if (e.target === e.currentTarget) {
+
+                        if (
+                            e.target ===
+                            e.currentTarget
+                        ) {
                             fecharModal();
                         }
+
                     }}
                 >
 
@@ -510,22 +581,30 @@ export default function Compra() {
                         <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
 
                             <div>
+
                                 <h2 className="text-lg font-semibold text-gray-900">
+
                                     {modal === "adicionar"
                                         ? "Nova compra"
                                         : "Editar compra"}
+
                                 </h2>
 
                                 <p className="mt-1 text-sm text-gray-500">
+
                                     {modal === "adicionar"
                                         ? "Preencha os dados da compra."
                                         : "Altere os dados da compra."}
+
                                 </p>
+
                             </div>
 
                             <button
                                 type="button"
-                                onClick={fecharModal}
+                                onClick={
+                                    fecharModal
+                                }
                                 className="text-xl text-gray-400 hover:text-gray-600"
                             >
                                 ×
@@ -535,13 +614,18 @@ export default function Compra() {
 
                         {/* FORM */}
 
-                        <form onSubmit={handleSubmit}>
+                        <form
+                            onSubmit={
+                                handleSubmit
+                            }
+                        >
 
                             <div className="grid grid-cols-1 gap-4 px-6 py-5 sm:grid-cols-2">
 
                                 {/* NÚMERO */}
 
                                 <div>
+
                                     <label className="mb-1.5 block text-sm font-medium text-gray-700">
                                         Número
                                     </label>
@@ -549,16 +633,22 @@ export default function Compra() {
                                     <input
                                         type="text"
                                         name="numero"
-                                        value={form.numero}
-                                        onChange={handleChange}
+                                        value={
+                                            form.numero
+                                        }
+                                        onChange={
+                                            handleChange
+                                        }
                                         placeholder="FL-00001"
                                         className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                                     />
+
                                 </div>
 
                                 {/* DATA */}
 
                                 <div>
+
                                     <label className="mb-1.5 block text-sm font-medium text-gray-700">
                                         Data
                                     </label>
@@ -566,10 +656,15 @@ export default function Compra() {
                                     <input
                                         type="date"
                                         name="data"
-                                        value={form.data}
-                                        onChange={handleChange}
+                                        value={
+                                            form.data
+                                        }
+                                        onChange={
+                                            handleChange
+                                        }
                                         className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                                     />
+
                                 </div>
 
                                 {/* DESCRIÇÃO */}
@@ -583,8 +678,12 @@ export default function Compra() {
                                     <input
                                         type="text"
                                         name="descricao"
-                                        value={form.descricao}
-                                        onChange={handleChange}
+                                        value={
+                                            form.descricao
+                                        }
+                                        onChange={
+                                            handleChange
+                                        }
                                         placeholder="Ex: Pregos"
                                         className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                                     />
@@ -602,8 +701,12 @@ export default function Compra() {
                                     <input
                                         type="number"
                                         name="valor"
-                                        value={form.valor}
-                                        onChange={handleChange}
+                                        value={
+                                            form.valor
+                                        }
+                                        onChange={
+                                            handleChange
+                                        }
                                         placeholder="0.00"
                                         step="0.01"
                                         min="0"
@@ -622,8 +725,12 @@ export default function Compra() {
 
                                     <select
                                         name="fornecedor_id"
-                                        value={form.fornecedor_id}
-                                        onChange={handleChange}
+                                        value={
+                                            form.fornecedor_id
+                                        }
+                                        onChange={
+                                            handleChange
+                                        }
                                         className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                                     >
 
@@ -631,81 +738,28 @@ export default function Compra() {
                                             Selecione um fornecedor
                                         </option>
 
-                                        {fornecedores.map((fornecedor) => (
-                                            <option
-                                                key={fornecedor.id}
-                                                value={fornecedor.id}
-                                            >
-                                                {fornecedor.codigo} -{" "}
-                                                {fornecedor.razao_social}
-                                            </option>
-                                        ))}
+                                        {fornecedores.map(
+                                            (fornecedor) => (
 
-                                    </select>
+                                                <option
+                                                    key={
+                                                        fornecedor.id
+                                                    }
+                                                    value={
+                                                        fornecedor.id
+                                                    }
+                                                >
+                                                    {
+                                                        fornecedor.codigo
+                                                    }{" "}
+                                                    -{" "}
+                                                    {
+                                                        fornecedor.razao_social
+                                                    }
+                                                </option>
 
-                                </div>
-
-                                {/* EMPRESA */}
-
-                                <div>
-
-                                    <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                                        Empresa
-                                    </label>
-
-                                    <select
-                                        name="empresa_id"
-                                        value={form.empresa_id}
-                                        onChange={handleChange}
-                                        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                                    >
-
-                                        <option value="">
-                                            Selecione uma empresa
-                                        </option>
-
-                                        {empresas.map((empresa) => (
-                                            <option
-                                                key={empresa.id}
-                                                value={empresa.id}
-                                            >
-                                                {empresa.codigo} -{" "}
-                                                {empresa.razao_social}
-                                            </option>
-                                        ))}
-
-                                    </select>
-
-                                </div>
-
-                                {/* USUÁRIO */}
-
-                                <div>
-
-                                    <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                                        Usuário
-                                    </label>
-
-                                    <select
-                                        name="usuario_id"
-                                        value={form.usuario_id}
-                                        onChange={handleChange}
-                                        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                                    >
-
-                                        <option value="">
-                                            Selecione um usuário
-                                        </option>
-
-                                        {usuarios.map((usuario) => (
-                                            <option
-                                                key={usuario.id}
-                                                value={usuario.id}
-                                            >
-                                                {usuario.nome} -{" "}
-                                                {usuario.email}
-                                            </option>
-                                        ))}
+                                            )
+                                        )}
 
                                     </select>
 
@@ -721,8 +775,12 @@ export default function Compra() {
 
                                     <select
                                         name="status_compra_id"
-                                        value={form.status_compra_id}
-                                        onChange={handleChange}
+                                        value={
+                                            form.status_compra_id
+                                        }
+                                        onChange={
+                                            handleChange
+                                        }
                                         className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                                     >
 
@@ -730,15 +788,28 @@ export default function Compra() {
                                             Selecione um status
                                         </option>
 
-                                        {statusCompras.map((status) => (
-                                            <option
-                                                key={status.id}
-                                                value={status.id}
-                                            >
-                                                {status.codigo} -{" "}
-                                                {status.descricao}
-                                            </option>
-                                        ))}
+                                        {statusCompras.map(
+                                            (status) => (
+
+                                                <option
+                                                    key={
+                                                        status.id
+                                                    }
+                                                    value={
+                                                        status.id
+                                                    }
+                                                >
+                                                    {
+                                                        status.codigo
+                                                    }{" "}
+                                                    -{" "}
+                                                    {
+                                                        status.descricao
+                                                    }
+                                                </option>
+
+                                            )
+                                        )}
 
                                     </select>
 
@@ -754,8 +825,12 @@ export default function Compra() {
 
                                     <textarea
                                         name="observacao"
-                                        value={form.observacao}
-                                        onChange={handleChange}
+                                        value={
+                                            form.observacao
+                                        }
+                                        onChange={
+                                            handleChange
+                                        }
                                         rows="3"
                                         placeholder="Observações sobre a compra..."
                                         className="w-full resize-none rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
@@ -766,9 +841,13 @@ export default function Compra() {
                                 {/* ERRO */}
 
                                 {erroForm && (
+
                                     <div className="sm:col-span-2 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
-                                        {erroForm}
+                                        {
+                                            erroForm
+                                        }
                                     </div>
+
                                 )}
 
                             </div>
@@ -779,8 +858,12 @@ export default function Compra() {
 
                                 <button
                                     type="button"
-                                    onClick={fecharModal}
-                                    disabled={salvando}
+                                    onClick={
+                                        fecharModal
+                                    }
+                                    disabled={
+                                        salvando
+                                    }
                                     className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                                 >
                                     Cancelar
@@ -788,14 +871,18 @@ export default function Compra() {
 
                                 <button
                                     type="submit"
-                                    disabled={salvando}
+                                    disabled={
+                                        salvando
+                                    }
                                     className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
                                 >
+
                                     {salvando
                                         ? "Salvando..."
                                         : modal === "adicionar"
                                             ? "Cadastrar"
                                             : "Salvar alterações"}
+
                                 </button>
 
                             </div>
@@ -805,85 +892,115 @@ export default function Compra() {
                     </div>
 
                 </div>
+
             )}
 
             {/* =====================================================
                 MODAL EXCLUIR
             ====================================================== */}
 
-            {modal === "excluir" && compraSelecionada && (
+            {modal === "excluir" &&
+                compraSelecionada && (
 
-                <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-                    onMouseDown={(e) => {
-                        if (e.target === e.currentTarget) {
-                            fecharModal();
-                        }
-                    }}
-                >
+                    <div
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+                        onMouseDown={(e) => {
 
-                    <div className="w-full max-w-md rounded-xl bg-white shadow-xl">
+                            if (
+                                e.target ===
+                                e.currentTarget
+                            ) {
+                                fecharModal();
+                            }
 
-                        <div className="px-6 py-6">
+                        }}
+                    >
 
-                            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
-                                <span className="text-xl font-bold text-red-600">
-                                    !
-                                </span>
+                        <div className="w-full max-w-md rounded-xl bg-white shadow-xl">
+
+                            <div className="px-6 py-6">
+
+                                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+
+                                    <span className="text-xl font-bold text-red-600">
+                                        !
+                                    </span>
+
+                                </div>
+
+                                <h2 className="text-lg font-semibold text-gray-900">
+                                    Excluir compra?
+                                </h2>
+
+                                <p className="mt-2 text-sm leading-6 text-gray-500">
+
+                                    Tem certeza que deseja excluir a compra{" "}
+
+                                    <strong className="text-gray-700">
+                                        {
+                                            compraSelecionada.numero
+                                        }
+                                    </strong>
+
+                                    ?
+
+                                </p>
+
+                                <p className="mt-2 text-sm text-red-500">
+                                    Essa ação não poderá ser desfeita.
+                                </p>
+
+                                {erroForm && (
+
+                                    <div className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
+                                        {
+                                            erroForm
+                                        }
+                                    </div>
+
+                                )}
+
                             </div>
 
-                            <h2 className="text-lg font-semibold text-gray-900">
-                                Excluir compra?
-                            </h2>
+                            <div className="flex justify-end gap-3 border-t border-gray-200 px-6 py-4">
 
-                            <p className="mt-2 text-sm leading-6 text-gray-500">
-                                Tem certeza que deseja excluir a compra{" "}
-                                <strong className="text-gray-700">
-                                    {compraSelecionada.numero}
-                                </strong>
-                                ?
-                            </p>
+                                <button
+                                    type="button"
+                                    onClick={
+                                        fecharModal
+                                    }
+                                    disabled={
+                                        salvando
+                                    }
+                                    className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                                >
+                                    Cancelar
+                                </button>
 
-                            <p className="mt-2 text-sm text-red-500">
-                                Essa ação não poderá ser desfeita.
-                            </p>
+                                <button
+                                    type="button"
+                                    onClick={
+                                        handleExcluir
+                                    }
+                                    disabled={
+                                        salvando
+                                    }
+                                    className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+                                >
 
-                            {erroForm && (
-                                <div className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
-                                    {erroForm}
-                                </div>
-                            )}
+                                    {salvando
+                                        ? "Excluindo..."
+                                        : "Sim, excluir"}
 
-                        </div>
+                                </button>
 
-                        <div className="flex justify-end gap-3 border-t border-gray-200 px-6 py-4">
-
-                            <button
-                                type="button"
-                                onClick={fecharModal}
-                                disabled={salvando}
-                                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                            >
-                                Cancelar
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={handleExcluir}
-                                disabled={salvando}
-                                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
-                            >
-                                {salvando
-                                    ? "Excluindo..."
-                                    : "Sim, excluir"}
-                            </button>
+                            </div>
 
                         </div>
 
                     </div>
 
-                </div>
-            )}
+                )}
 
         </div>
     );
