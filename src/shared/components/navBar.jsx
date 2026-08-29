@@ -1,13 +1,19 @@
-import { FaHome, FaUser, FaShoppingCart, FaUserTie, FaSignOutAlt } from "react-icons/fa";
+import { FaHome, FaUser, FaShoppingCart, FaUserTie, FaSignOutAlt, FaChartBar, FaCheckCircle, FaBalanceScale, FaBoxes, FaBriefcase, FaTruck, FaHistory } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 const links = {
     admin: [
         { href: "/", label: "Home", icon: FaHome },
-        { href: "/usuarios", label: "Usuários", icon: FaUser },
         { href: "/compra", label: "Compras", icon: FaShoppingCart },
-        { href: "/fornecedores", label: "Fornecedores", icon: FaUserTie },
+        { href: "/historico", label: "Histórico", icon: FaHistory },
+        { href: "/produto", label: "Produto", icon: FaBoxes},
+        { href: "/usuario", label: "Usuários", icon: FaUser },
+        { href: "/empresa", label: "Empresa", icon: FaBriefcase },
+        { href: "/fornecedor", label: "Fornecedores", icon: FaTruck },
+        { href: "/nivel", label: "Niveis", icon: FaChartBar},
+        { href: "/status", label: "Status", icon: FaCheckCircle},
+        { href: "/regime", label: "Regime Tributário", icon: FaBalanceScale},
         { href: "/cadastro", label: "Cadastros", icon: FaUser },
     ],
     gestor: [

@@ -1,11 +1,11 @@
-function Compra() {
+function Fornecedor() {
     return ( 
         <div className="flex items-center justify-center mb-6">
             <h1 className="text-2xl font-bold text-white">
-                Compra
+                Fornecedor
             </h1>
         </div>
      );
 }
 
-export default Compra;
+export default Fornecedor;
