@@ -1,80 +1,104 @@
-import { FaHome, FaUser, FaShoppingCart, FaUserTie, FaSignOutAlt, FaChartBar, FaCheckCircle, FaBalanceScale, FaBoxes, FaBriefcase, FaTruck, FaHistory } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
+import {
+  FaHome, FaUser, FaShoppingCart, FaSignOutAlt, FaChartBar,
+  FaCheckCircle, FaBalanceScale, FaBoxes, FaBriefcase, FaTruck,
+  FaHistory, FaBars, FaTimes
+} from "react-icons/fa";
+import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useState } from "react";
+import logo from "../../shared/assets/logo.png";
 
-const links = {
-    admin: [
-        { href: "/", label: "Home", icon: FaHome },
-        { href: "/compra", label: "Compras", icon: FaShoppingCart },
-        { href: "/historico", label: "Histórico", icon: FaHistory },
-        { href: "/produto", label: "Produto", icon: FaBoxes},
-        { href: "/usuario", label: "Usuários", icon: FaUser },
-        { href: "/empresa", label: "Empresa", icon: FaBriefcase },
-        { href: "/fornecedor", label: "Fornecedores", icon: FaTruck },
-        { href: "/nivel", label: "Niveis", icon: FaChartBar},
-        { href: "/status", label: "Status", icon: FaCheckCircle},
-        { href: "/regime", label: "Regime Tributário", icon: FaBalanceScale},
-        { href: "/cadastro", label: "Cadastros", icon: FaUser },
-    ],
-    gestor: [
-        { href: "/", label: "Home", icon: FaHome },
-        { href: "/compra", label: "Compras", icon: FaShoppingCart },
-        { href: "/fornecedores", label: "Fornecedores", icon: FaUserTie },
-    ],
-};
+const adminLinks = [
+  { href: "/", label: "Dashboard", icon: FaHome },
+  { href: "/compra", label: "Compras", icon: FaShoppingCart },
+  { href: "/historico", label: "Histórico", icon: FaHistory },
+  { href: "/produto", label: "Produtos", icon: FaBoxes },
+  { href: "/fornecedor", label: "Fornecedores", icon: FaTruck },
+  { href: "/empresa", label: "Empresas", icon: FaBriefcase },
+  { href: "/usuario", label: "Usuários", icon: FaUser },
+  { href: "/nivel", label: "Níveis de acesso", icon: FaChartBar },
+  { href: "/status", label: "Status de compra", icon: FaCheckCircle },
+  { href: "/regime", label: "Regime tributário", icon: FaBalanceScale },
+  { href: "/cadastro", label: "Cadastro de usuário", icon: FaUser },
+];
 
-export default function NavBar({ admin }) {
-    const { pathname } = useLocation();
-    const items = admin ? links.admin : links.gestor;
+const gestorLinks = [
+  { href: "/", label: "Dashboard", icon: FaHome },
+  { href: "/compra", label: "Compras", icon: FaShoppingCart },
+  { href: "/historico", label: "Histórico", icon: FaHistory },
+  { href: "/produto", label: "Produtos", icon: FaBoxes },
+  { href: "/fornecedor", label: "Fornecedores", icon: FaTruck },
+];
 
-    const { logout } = useAuth();
+const userLinks = [
+  { href: "/", label: "Dashboard", icon: FaHome },
+  { href: "/compra", label: "Compras", icon: FaShoppingCart },
+  { href: "/historico", label: "Histórico", icon: FaHistory },
+  { href: "/produto", label: "Produtos", icon: FaBoxes },
+  { href: "/fornecedor", label: "Fornecedores", icon: FaTruck },
+];
 
-    return (
-        <nav className="fixed left-0 top-0 h-screen w-60 flex flex-col
-                         bg-slate-900 border-r border-slate-800">
+export default function NavBar() {
+  const { user, logout } = useAuth();
+  const [open, setOpen] = useState(false);
+  const items = user?.nivel_acesso === 1 ? adminLinks : user?.nivel_acesso === 2 ? gestorLinks : userLinks;
 
-            <div className="h-16 flex items-center gap-2 px-6 border-b border-slate-800">
-                <div className="w-2 h-2 rounded-sm bg-blue-600" />
-                <span className="text-sm font-bold text-slate-100">
-                    SISTEMA DE COMPRAS
-                </span>
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="fixed left-4 top-4 z-40 rounded-lg bg-[#2C2426] p-3 text-white shadow-lg lg:hidden"
+        aria-label="Abrir menu"
+      >
+        <FaBars />
+      </button>
+
+      {open && <button aria-label="Fechar menu" className="fixed inset-0 z-40 bg-black/40 lg:hidden" onClick={() => setOpen(false)} />}
+
+      <aside className={`fixed left-0 top-0 z-50 flex h-screen w-64 flex-col bg-amber-200 text-black shadow-xl transition-transform duration-200 ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
+        <div className="flex h-20 items-center justify-between border-b border-black/10 px-5">
+          <div className="flex items-center gap-3">
+            <img src={logo} alt="FAULIM" className="h-12 w-20 object-contain" />
+            <div>
+              <div className="text-sm font-bold tracking-wide">FAULIM</div>
+              <div className="text-[10px] uppercase tracking-[.18em] text-black/50">Sistema de compras</div>
             </div>
+          </div>
+          <button className="lg:hidden text-black/60 hover:text-black" onClick={() => setOpen(false)} aria-label="Fechar"><FaTimes /></button>
+        </div>
 
-            <div className="flex-1 flex flex-col gap-1 px-3 py-4">
-                {items.map(({ href, label, icon: Icon }) => {
-                    const isActive = pathname === href;
-                    return (
-                        <a
-                            key={href}
-                            href={href}
-                            className={`group flex items-center gap-3 px-3 py-2.5 rounded-md
-                                        text-sm font-medium transition-colors duration-150
-                                        ${isActive
-                                    ? "bg-blue-600/10 text-slate-100 border-l-2 border-blue-600"
-                                    : "text-slate-400 border-l-2 border-transparent hover:bg-slate-800 hover:text-slate-100"
-                                }`}
-                        >
-                            <Icon
-                                className={`text-[15px] ${isActive ? "text-blue-600" : "text-slate-500 group-hover:text-slate-400"
-                                    }`}
-                            />
-                            {label}
-                        </a>
-                    );
-                })}
+        <div className="border-b border-white/10 px-5 py-4">
+          <p className="truncate text-sm font-semibold">{user?.nome || "Usuário"}</p>
+          <p className="truncate text-xs text-gray-800/50">{user?.email || ""}</p>
+          <span className="mt-2 inline-flex rounded-full bg-[#FF0029]/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#FF5A76]">
+            {user?.nivel_acesso === 1 ? "Administrador" : "Usuário"}
+          </span>
+        </div>
 
-                <button type="button" onClick={logout}
-                    className="group flex w-full items-center gap-3 rounded-lg border border-transparent px-4 py-3 text-sm font-medium text-slate-400 transition-all duration-200 hover:border-red-500/20 hover:bg-red-500/10 hover:text-red-400 focus:outline-none focus:ring-2 focus:ring-red-500/30" >
-
-                    <span className="text-[15px]" >
-                        Sair
-                    </span>
-                    <FaSignOutAlt
-                        className="text-[15px]"
-                    />
-                </button>
-
-            </div>
+        <nav className="flex-1 overflow-y-auto px-3 py-4">
+          <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[.18em] text-black">Menu</p>
+          <div className="space-y-1">
+            {items.map(({ href, label, icon: Icon }) => (
+              <NavLink
+                key={href}
+                to={href}
+                onClick={() => setOpen(false)}
+                end={href === "/"}
+                className={({ isActive }) => `group flex items-center gap-3 rounded-lg border-l-2 px-3 py-2.5 text-sm font-medium transition ${isActive ? "border-[#FF0029] bg-black/10 text-" : "border-transparent text-black/70 hover:bg-white/20 hover:text-black"}`}
+              >
+                {({ isActive }) => <><Icon className={isActive ? "text-[#FF0029]" : "text-black/35 group-hover:text-black/60"} />{label}</>}
+              </NavLink>
+            ))}
+          </div>
         </nav>
-    );
+
+        <div className="border-t border-white/10 p-3">
+          <button type="button" onClick={logout} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-black transition hover:bg-red-600 hover:text-white">
+            <FaSignOutAlt /> Sair
+          </button>
+        </div>
+      </aside>
+    </>
+  );
 }
