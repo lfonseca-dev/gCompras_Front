@@ -6,9 +6,9 @@ export default function Layout() {
     const { user } = useAuth();
 
     return (
-        <div className="flex">
+        <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
             <NavBar admin={user?.nivel_acesso === 1} />
-            <main className="flex-1 ml-60 min-h-screen bg-slate-950">
+            <main className="min-h-screen ml-0 lg:ml-64 pt-16 lg:pt-0 transition-all duration-200">
                 <Outlet />
             </main>
         </div>

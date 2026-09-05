@@ -1,68 +1,93 @@
-import { FaShoppingCart, FaUserTie, FaUser, FaArrowRight } from "react-icons/fa";
+import { FaHome, FaShoppingCart, FaTruck, FaArrowRight, FaBoxes } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import PageLayout from "../components/PageLayout";
+import PageCard from "../components/PageCard";
 
 export default function Home() {
     return (
-        <div className="px-8 py-10">
-            <div className="text-3xl font-bold text-white mb-8 border-b border-slate-700 pb-4">
-                Bem-vindo(a) ao Sistema de Compras
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <PageLayout
+            title="Bem-vindo(a) ao Sistema de Compras"
+            subtitle="Painel principal para gestão centralizada de compras, fornecedores e produtos."
+            icon={FaHome}
+        >
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 {/* Card de Boas-Vindas */}
-                <div className="bg-slate-800 rounded-xl border border-slate-700 p-6 shadow-md hover:border-blue-500/30 transition-all duration-200">
-                    <h2 className="text-2xl font-semibold text-white mb-3">Visão Geral</h2>
-                    <p className="text-slate-400 mb-4">
-                        Este é o painel principal do sistema de compras, onde você pode gerenciar 
-                        usuários, compras e fornecedores de forma eficiente e organizada.
+                <PageCard
+                    title="Visão Geral"
+                    description="Resumo do sistema FAULIM"
+                >
+                    <p className="text-slate-600 mb-4 leading-relaxed">
+                        Este é o painel principal do sistema de compras FAULIM. Aqui você pode acompanhar
+                        e gerenciar fornecedores, solicitações de compras, catálogo de produtos e parâmetros do sistema.
                     </p>
-                    <p className="text-slate-500 text-sm">
-                        Use o menu lateral para navegar entre as diferentes funcionalidades disponíveis.
+                    <p className="text-sm text-slate-500 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                        💡 Use o menu lateral para navegar rapidamente entre os módulos disponíveis.
                     </p>
-                </div>
+                </PageCard>
 
                 {/* Cards de Atalhos */}
                 <div className="space-y-4">
-                    <div className="bg-slate-800 rounded-xl border border-slate-700 p-6 shadow-sm hover:border-blue-500/30 transition-all duration-200">
+                    <PageCard className="hover:border-[#FF0029]/30 transition-all">
                         <div className="flex items-start gap-4">
-                            <div className="bg-blue-500/10 p-3 rounded-lg">
-                                <FaShoppingCart className="text-blue-400 text-xl" />
+                            <div className="rounded-lg bg-blue-50 p-3 text-blue-600">
+                                <FaShoppingCart className="text-xl" />
                             </div>
-                            <div>
-                                <h3 className="text-lg font-semibold text-white mb-1">Compras</h3>
-                                <p className="text-slate-400 text-sm mb-3">
-                                    Visualize e gerencie todas as suas compras de forma centralizada.
+                            <div className="flex-1">
+                                <h3 className="font-semibold text-slate-900 mb-1">Solicitações de Compras</h3>
+                                <p className="text-slate-500 text-sm mb-3">
+                                    Visualize e gerencie todas as solicitações de compra de forma centralizada.
                                 </p>
-                                <a 
-                                    href="/compra" 
-                                    className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-medium text-sm"
+                                <Link
+                                    to="/compra"
+                                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#FF0029] hover:underline"
                                 >
-                                    Ver Compras <FaArrowRight />
-                                </a>
+                                    Acessar Compras <FaArrowRight className="text-xs" />
+                                </Link>
                             </div>
                         </div>
-                    </div>
+                    </PageCard>
 
-                    <div className="bg-slate-800 rounded-xl border border-slate-700 p-6 shadow-sm hover:border-blue-500/30 transition-all duration-200">
+                    <PageCard className="hover:border-[#FF0029]/30 transition-all">
                         <div className="flex items-start gap-4">
-                            <div className="bg-blue-500/10 p-3 rounded-lg">
-                                <FaUserTie className="text-blue-400 text-xl" />
+                            <div className="rounded-lg bg-emerald-50 p-3 text-emerald-600">
+                                <FaTruck className="text-xl" />
                             </div>
-                            <div>
-                                <h3 className="text-lg font-semibold text-white mb-1">Fornecedores</h3>
-                                <p className="text-slate-400 text-sm mb-3">
-                                    Gerencie informações e relacionamentos com fornecedores.
+                            <div className="flex-1">
+                                <h3 className="font-semibold text-slate-900 mb-1">Fornecedores</h3>
+                                <p className="text-slate-500 text-sm mb-3">
+                                    Gerencie informações, cadastros e contatos de fornecedores.
                                 </p>
-                                <a 
-                                    href="/fornecedores" 
-                                    className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-medium text-sm"
+                                <Link
+                                    to="/fornecedor"
+                                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#FF0029] hover:underline"
                                 >
-                                    Ver Fornecedores <FaArrowRight />
-                                </a>
+                                    Ver Fornecedores <FaArrowRight className="text-xs" />
+                                </Link>
                             </div>
                         </div>
-                    </div>
+                    </PageCard>
+
+                    <PageCard className="hover:border-[#FF0029]/30 transition-all">
+                        <div className="flex items-start gap-4">
+                            <div className="rounded-lg bg-purple-50 p-3 text-purple-600">
+                                <FaBoxes className="text-xl" />
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="font-semibold text-slate-900 mb-1">Produtos</h3>
+                                <p className="text-slate-500 text-sm mb-3">
+                                    Consulte e cadastre o catálogo de produtos do sistema.
+                                </p>
+                                <Link
+                                    to="/produto"
+                                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#FF0029] hover:underline"
+                                >
+                                    Ver Produtos <FaArrowRight className="text-xs" />
+                                </Link>
+                            </div>
+                        </div>
+                    </PageCard>
                 </div>
             </div>
-        </div>
+        </PageLayout>
     );
 }

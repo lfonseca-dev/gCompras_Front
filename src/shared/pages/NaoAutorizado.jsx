@@ -31,10 +31,10 @@ export default function NaoAutorizado() {
                         Voltar
                     </button>
                     <Link
-                        to="/dashboard"
+                        to="/"
                         className="px-4 py-2.5 rounded-md text-sm font-medium
-                                   bg-blue-600 text-white
-                                   hover:bg-blue-700
+                                   bg-[#FF0029] text-white
+                                   hover:bg-[#D90023]
                                    transition-colors duration-150"
                     >
                         Ir para o Dashboard

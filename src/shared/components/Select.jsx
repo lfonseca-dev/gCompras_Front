@@ -8,7 +8,7 @@ const Select = forwardRef(function Select(
     return (
         <div className="flex flex-col gap-1.5">
             {label && (
-                <label className="text-sm font-medium text-slate-300">
+                <label className="text-sm font-medium text-black">
                     {label}
                 </label>
             )}
@@ -18,8 +18,8 @@ const Select = forwardRef(function Select(
                     ref={ref}
                     defaultValue=""
                     className={`w-full appearance-none px-3 py-2.5 pr-10 rounded-md text-sm
-                                bg-slate-800 border border-slate-700
-                                text-slate-100
+                                bg-slate-200 border border-slate-700
+                                text-slate-500
                                 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent
                                 transition-colors duration-150
                                 ${error ? "border-red-600 focus:ring-red-600" : ""}

@@ -56,7 +56,7 @@ export default function NavBar() {
 
       {open && <button aria-label="Fechar menu" className="fixed inset-0 z-40 bg-black/40 lg:hidden" onClick={() => setOpen(false)} />}
 
-      <aside className={`fixed left-0 top-0 z-50 flex h-screen w-64 flex-col bg-amber-200 text-black shadow-xl transition-transform duration-200 ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
+      <aside className={`fixed left-0 top-0 z-50 flex h-screen w-64 flex-col bg-violet-100 text-black shadow-xl transition-transform duration-200 ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
         <div className="flex h-20 items-center justify-between border-b border-black/10 px-5">
           <div className="flex items-center gap-3">
             <img src={logo} alt="FAULIM" className="h-12 w-20 object-contain" />
